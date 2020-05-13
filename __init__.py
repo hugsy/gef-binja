@@ -45,8 +45,7 @@ from .helpers import (
     info,
     err,
     dbg,
-    add_gef_breakpoint,
-    delete_gef_breakpoint,
+    RunInBackground,
 )
 
 from .constants import (
@@ -64,28 +63,50 @@ from .gef import (
 )
 
 
-__service_started = False
 __service_thread = None
+__gef_instance = None
 
 
+def is_service_started():
+    global __service_thread
+    return __service_thread is not None
 
-def create_binja_menu():
+
+def gef_add_breakpoint(bv, addr):
+    global __gef_instance
+    if __gef_instance is None:
+        return False
+    return __gef_instance.add_breakpoint(bv, addr)
+
+
+def gef_del_breakpoint(bv, addr):
+    global __gef_instance
+    if __gef_instance is None:
+        return False
+    return __gef_instance.delete_breakpoint(bv, addr)
+
+
+def register_gef_breakpoint_menu():
     # Binja does not really support menu in its GUI just yet
     PluginCommand.register_for_address(
-        "gef : add breakpoint",
+        "GEF\\Set breakpoint",
         "Add a breakpoint in gef at the specified location.",
-        add_gef_breakpoint
+        gef_add_breakpoint,
+        is_valid = lambda view, addr: is_service_started()
     )
 
     PluginCommand.register_for_address(
-        "gef : delete breakpoint",
+        "GEF\\Delete breakpoint",
         "Remove a breakpoint in gef at the specified location.",
-        delete_gef_breakpoint
+        gef_del_breakpoint,
+        is_valid = lambda view, addr: is_service_started()
     )
     return
 
 
 def start_service(host, port, bv):
+    """ Starting the service """
+    global __gef_instance
     info("Starting service on {}:{}".format(host, port))
     server = xmlrpc.server.SimpleXMLRPCServer(
         (host, port),
@@ -94,7 +115,8 @@ def start_service(host, port, bv):
         allow_none=True
     )
     server.register_introspection_functions()
-    server.register_instance(Gef(server, bv))
+    __gef_instance = Gef(server, bv)
+    server.register_instance(__gef_instance)
     dbg("Registered {} functions.".format( len(server.system_listMethods()) ))
     while True:
         if hasattr(server, "shutdown") and server.shutdown==True: break
@@ -102,63 +124,64 @@ def start_service(host, port, bv):
     return
 
 
-def gef_start(bv):
-    global __service_thread, __service_started
-    __service_thread = threading.Thread(target=start_service, args=(HOST, PORT, bv))
-    __service_thread.daemon = True
-    __service_thread.start()
-    dbg("Started new thread '{}'".format(__service_thread.name))
-
-    if not __service_started:
-        create_binja_menu()
-        __service_started = True
-    return
+def shutdown_service():
+    try:
+        cli = xmlrpc.client.ServerProxy("http://{:s}:{:d}".format(HOST, PORT))
+        cli.shutdown()
+    except socket.error:
+        pass
 
 
-def gef_stop(bv):
+def stop_service():
+    """ Stopping the service """
     global __service_thread
+    dbg("Trying to stop service thread")
+    shutdown_service()
     __service_thread.join()
     __service_thread = None
     info("Server stopped")
     return
 
 
-def gef_start_stop(bv):
-    if __service_thread is None:
-        dbg("Trying to start service thread")
-        gef_start(bv)
-        show_message_box(
-            "GEF",
-            "Service successfully started, you can now have gef connect to it",
-            MessageBoxButtonSet.OKButtonSet,
-            MessageBoxIcon.InformationIcon
-        )
-
-    else:
-        dbg("Trying to stop service thread")
-        try:
-            cli = xmlrpc.client.ServerProxy("http://{:s}:{:d}".format(HOST, PORT))
-            cli.shutdown()
-        except socket.error:
-            pass
-
-        gef_stop(bv)
-        show_message_box(
-            "GEF",
-            "Service successfully stopped",
-            MessageBoxButtonSet.OKButtonSet,
-            MessageBoxIcon.InformationIcon
-        )
+def gef_start(bv):
+    global __service_thread
+    dbg("Starting background service...")
+    __service_thread = threading.Thread(target=start_service, args=(HOST, PORT, bv))
+    __service_thread.daemon = True
+    __service_thread.start()
+    register_gef_breakpoint_menu()
+    show_message_box(
+        "GEF",
+        "Service successfully started, you can now have gef connect to it",
+        MessageBoxButtonSet.OKButtonSet,
+        MessageBoxIcon.InformationIcon
+    )
     return
 
 
-
-
-
+def gef_stop(bv):
+    "Stopping background service... "
+    stop_service()
+    show_message_box(
+        "GEF",
+        "Service successfully stopped",
+        MessageBoxButtonSet.OKButtonSet,
+        MessageBoxIcon.InformationIcon
+    )
+    return
 
 
 PluginCommand.register(
-    "Start/stop server GEF interaction",
-    "Start/stop the XMLRPC server for communicating with gef",
-    gef_start_stop
+    "GEF\\Start service",
+    "Start the service for communicating with gef",
+    gef_start,
+    is_valid = lambda view: not is_service_started()
+)
+
+
+PluginCommand.register(
+    "GEF\\Stop service",
+    "Stop the service for communicating with gef",
+    gef_stop,
+    is_valid = lambda view: is_service_started()
 )

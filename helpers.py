@@ -2,6 +2,7 @@ from binaryninja import (
     log_info,
     log_debug,
     log_error,
+    BackgroundTaskThread,
 )
 
 from .constants import (
@@ -9,11 +10,6 @@ from .constants import (
     HL_BP_COLOR,
     HL_NO_COLOR,
 )
-
-
-g_breakpoints = set()
-
-g_current_instruction = 0
 
 
 def expose(f):
@@ -42,29 +38,21 @@ def dbg(x):
         log_debug("[*] {:s}".format(x))
 
 
-def hl(bv, addr, color):
-    dbg("hl(%#x, %s)" % (addr, color))
-    start_addr = bv.get_previous_function_start_before(addr)
-    func = bv.get_function_at(start_addr)
-    if func is None:
+
+class RunInBackground(BackgroundTaskThread):
+    def __init__(self, target, cancel_cb=None, *args, **kwargs):
+            BackgroundTaskThread.__init__(self, '', cancel_cb is not None)
+            self.target = target
+            self.args = args
+            self.kwargs = kwargs
+            self.cancel_cb = cancel_cb
+            return
+
+    def run(self):
+        self.target(self, *self.args, **self.kwargs)
         return
-    func.set_user_instr_highlight(addr, color)
-    return
 
+    def cancel(self):
+        self.cancel_cb()
+        return
 
-def add_gef_breakpoint(bv, addr):
-    global  g_breakpoints
-    if addr in g_breakpoints: return False
-    g_breakpoints.add(addr)
-    info("Breakpoint {:#x} added".format(addr))
-    hl(bv, addr, HL_BP_COLOR)
-    return True
-
-
-def delete_gef_breakpoint(bv, addr):
-    global g_breakpoints
-    if addr not in g_breakpoints: return False
-    g_breakpoints.discard(addr)
-    info("Breakpoint {:#x} removed".format(addr))
-    hl(bv, addr, HL_NO_COLOR)
-    return True
