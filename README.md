@@ -2,7 +2,7 @@
 
 Author: **@hugsy**
 
-Interface [GDB-GEF](https://github.com/hugsy/gef) with Binary Ninja
+Interface [GDB-GEF](https://github.com/hugsy/gef) with [Binary Ninja](https://binary.ninja)
 
 
 
