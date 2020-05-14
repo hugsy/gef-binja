@@ -47,7 +47,7 @@ class Gef:
         self._version = ("Binary Ninja", core_version())
         self.__old_bps = set()
         self.__breakpoints = set()
-        tag_type = bv.tag_types["Breakpoints"]
+        tag_type = bv.tag_types["Breakpoints"] if "Breakpoints" in bv.tag_types else Tag
         self.__bp_tag = bv.create_tag(tag_type, "GEF Breakpoint", True)
         self.__current_instruction = 0
         return
@@ -105,7 +105,7 @@ class Gef:
 
     @expose
     def jump(self, address):
-        """ Jump(int addr) => None
+        """ jump(int addr) => None
         Move the EA pointer to the address pointed by `addr`.
         Example: binaryninja jump 0x4049de
         """
@@ -119,7 +119,7 @@ class Gef:
 
     @expose
     def makecomm(self, address, comment):
-        """ MakeComm(int addr, string comment) => None
+        """ makecomm(int addr, string comment) => None
         Add a comment at the location `address`.
         Example: binaryninja makecomm 0x40000 "Important call here!"
         """
@@ -130,7 +130,7 @@ class Gef:
 
     @expose
     def setcolor(self, address, color='0xff0000'):
-        """ SetColor(int addr [, int color]) => None
+        """ setcolor(int addr [, int color]) => None
         Set the location pointed by `address` with `color`.
         Example: binaryninja setcolor 0x40000 0xff0000
         """
@@ -142,7 +142,7 @@ class Gef:
 
     @expose
     def sync(self, off, added, removed):
-        """ Sync(off, added, removed) => None
+        """ sync(off, added, removed) => None
         Synchronize debug info with gef. This is an internal function. It is not recommended using it from the command line.
         Example: binaryninja sync
         """
