@@ -148,7 +148,7 @@ class Gef:
         """
         off = int(off, 0)
         pc = self.base + off
-        if DEBUG: log_info("[*] current_pc=%#x , old_pc=%#x" % (pc, self.__current_instruction))
+        dbg("current_pc=%#x , old_pc=%#x" % (pc, self.__current_instruction))
 
         # unhighlight the _current_instruction
         if self.__current_instruction > 0:
