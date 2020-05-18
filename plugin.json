@@ -1,25 +1,20 @@
 {
-	"pluginmetadataversion" : 2,
-	"name": "GEF-Binja",
-	"type": ["ui", "helper"],
-	"api": ["python3"],
-	"description": "Interface Binary Ninja with GDB-GEF easily.",
-	"longdescription": "gef-binja: This script is the server-side of the XML-RPC defined for gef for BinaryNinja. It will spawn a threaded XMLRPC server from your current BN session making it possible for gef to interact with Binary Ninja.",
-	"license": {
-		"name": "MIT",
-		"text": "Copyright (c) 2013-2020 crazy rabbidz\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
-	},
-	"platforms" : ["Darwin", "Linux", "Windows"],
-	"installinstructions" : {
-		"Linux" : "",
-		"Windows" : "",
-		"Darwin" : "should work, but untested"
-	},
-	"dependencies": {
-		"apt": ["gdb-multiarch"],
-		"other": ["This plugin will interact with a [GEF instance](https://github.com/hugsy/gef)."]
-	},
-	"version": "0.2",
-	"author": "hugsy",
-	"minimumbinaryninjaversion": 1200
+    "pluginmetadataversion" : 2,
+    "name": "GEF-Binja",
+    "type": ["ui", "helper"],
+    "api": ["python3"],
+    "description": "Interface Binary Ninja with GDB-GEF easily.",
+    "longdescription": "gef-binja: This script is the server-side of the XML-RPC defined for gef for BinaryNinja. It will spawn a threaded XMLRPC server from your current BN session making it possible for gef to interact with Binary Ninja.",
+    "license": {
+        "name": "MIT",
+        "text": "Copyright (c) 2013-2020 crazy rabbidz\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
+    },
+    "platforms" : ["Darwin", "Linux", "Windows"],
+    "dependencies": {
+        "apt": ["gdb-multiarch"],
+        "other": ["This plugin will interact with a [GEF instance](https://github.com/hugsy/gef)."]
+    },
+    "version": "0.2",
+    "author": "hugsy",
+    "minimumbinaryninjaversion": 1300
 }

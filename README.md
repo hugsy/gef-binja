@@ -2,7 +2,7 @@
 
 Author: **@hugsy**
 
-Interface [GDB-GEF](https://github.com/hugsy/gef) with [Binary Ninja](https://binary.ninja)
+Interface easily [GDB-GEF](https://github.com/hugsy/gef) with [Binary Ninja](https://binary.ninja)
 
 
 
@@ -17,28 +17,29 @@ It will spawn a threaded XMLRPC server from your current BN session making it po
 [![](https://i.imgur.com/xvoUACt.png)](https://www.youtube.com/watch?v=QJKmcZumWyA)
 
 
+### Installation
 
-### GUI installation
+#### GUI installation
 
-(soon available directly from the Plugin Manager)
+In Binary Ninja, press `Ctrl-Shift-M` to open the Plugin Manager. Then search for `GEF-Binja` and install it.
 
 
-### Manual installation
+#### Manual installation
 
-#### Linux
+##### Linux
 
 ```bash
 $ git clone https://github.com/hugsy/gef-binja/ "~/.binaryninja/plugins/gef-binja"
 ```
 
-#### Windows
+##### Windows
 
 ```powershell
 PS :\> git clone https://github.com/hugsy/gef-binja  "$Env:APPDATA\Binary Ninja\plugins\gef-binja"
 ```
 
 
-#### Darwin
+##### Darwin
 
 Untested but should work
 
@@ -46,13 +47,29 @@ Untested but should work
 $ git clone https://github.com/hugsy/gef-binja/ "~/Library/Application Support/Binary Ninja/plugins/gef-binja"
 ```
 
+#### GEF Installation
+
+If you don't have [`gef`](https://github.com/hugsy/gef) on the host where your GDB is running, the quickest way to install it is by running the following command from a shell prompt:
+
+
+```bash
+wget -q -O- https://github.com/hugsy/gef/raw/master/scripts/gef.sh | sh
+```
+
+In GDB, configure `gef` to connect to Binary Ninja:
+
+```
+gef➤  gef config ida-interact
+```
+
+*Note*: the config option is called `ida-interact` because GEF uses the same protocol for both communication with Binja and IDA.
 
 
 ## Minimum Version
 
 This plugin requires the following minimum version of Binary Ninja:
 
- * 1200
+ * 1300
 
 
 
