@@ -47,7 +47,7 @@ class Gef:
         self._version = ("Binary Ninja", core_version())
         self.__old_bps = set()
         self.__breakpoints = set()
-        tag_type = bv.tag_types["Breakpoints"] if "Breakpoints" in bv.tag_types else Tag
+        tag_type = bv.tag_types["Breakpoints"] if "Breakpoints" in bv.tag_types else bv.tag_types["Bookmarks"]
         self.__bp_tag = bv.create_tag(tag_type, "GEF Breakpoint", True)
         self.__current_instruction = 0
         return
